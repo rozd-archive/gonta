@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark" xmlns:mx="library://ns.adobe.com/flex/halo" minWidth="1024" minHeight="768" xmlns:filters="org.gonta.filters.*" viewSourceURL="srcview/index.html">
+	
+	<fx:Script>
+		<![CDATA[
+
+			[Bindable]
+			private var reflectionY:Number = 240;
+			
+			[Bindable]
+			private var reflectionAlpha:Number = 0.5;
+
+			[Bindable]
+			private var reflectionHeight:Number = 50;
+			
+		]]>
+	</fx:Script>
+	
+	<s:layout>
+		<s:HorizontalLayout paddingLeft="10" paddingTop="10" paddingRight="10" paddingBottom="10" />
+	</s:layout>
+	
+	<s:BitmapImage source="@Embed(source='assets/images/autumn.jpg')">
+		<s:filters>
+			<filters:ReflectionFilter y="{ this.reflectionY }" alpha="{ this.reflectionAlpha }" height="{ this.reflectionHeight }" />
+		</s:filters>
+	</s:BitmapImage>
+	
+	<s:Panel height="240" title="http://helpexamples.com/flash/video/cuepoints.flv">
+		
+		<s:filters>
+			<filters:ReflectionFilter y="{ this.reflectionY }" alpha="{ this.reflectionAlpha }" height="{ this.reflectionHeight }" />
+		</s:filters>
+		
+		<s:VideoElement source="http://helpexamples.com/flash/video/cuepoints.flv" muted="true" complete=" event.target.play(0); " />
+		
+	</s:Panel>
+	
+	<s:Panel width="400" height="240" title="Reflection Settings">
+		
+		<s:filters>
+			<filters:ReflectionFilter y="{ this.reflectionY }" alpha="{ this.reflectionAlpha }" height="{ this.reflectionHeight }" />
+		</s:filters>
+		
+		<mx:Form width="100%" height="100%">
+			<mx:FormItem label="Reflection Y" width="100%">
+				<s:HSlider width="100%" minimum="0" maximum="480" value="{ this.reflectionY }" liveDragging="true" change=" this.reflectionY = event.target.value " />
+				<s:CheckBox label="Original Height" selected="{ this.reflectionY == 240 }" change=" if (event.target.selected) this.reflectionY = 240 " />
+			</mx:FormItem>
+			<mx:FormItem label="Reflection Alpha" width="100%">
+				<s:HSlider width="100%" minimum="0.0" maximum="1.0" valueInterval="0.01" value="{ this.reflectionAlpha }" liveDragging="true" change=" this.reflectionAlpha = event.target.value " />
+			</mx:FormItem>
+			<mx:FormItem label="Reflection Height" width="100%">
+				<s:HSlider width="100%" minimum="0" maximum="480" value="{ this.reflectionHeight }" liveDragging="true" change=" this.reflectionHeight = event.target.value " />
+			</mx:FormItem>
+		</mx:Form>
+	</s:Panel>
+	
+</s:Application>
