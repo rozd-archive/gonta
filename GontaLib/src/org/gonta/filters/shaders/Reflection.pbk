@@ -1,0 +1,58 @@
+<languageVersion: 1.0;>
+kernel Reflection
+<
+	namespace: "org.gonta.filters.shaders";
+	vendor: "Gonta Flex library";
+	version: 1;
+	description: "Creates Reflection of input image.";
+>
+{
+	input image4 source;
+	output pixel4 target;
+	
+	parameter float imageHeight
+	<
+		minValue: 0.0;
+		maxValue: 2048.0;
+		defaultValue: 0.0;
+	>;
+	
+	parameter float reflectionAlpha
+    <
+        minValue : 0.0;
+        maxValue : 1.0;
+        defaultValue : 0.5;
+    >;
+
+	parameter float reflectionHeight
+    <
+        minValue : 0.0;
+        maxValue : 2048.0;
+        defaultValue : 50.0;
+    >;
+		
+	void evaluatePixel()
+	{
+		float2 pixel = outCoord();
+		
+		if (pixel.y < imageHeight)
+		{
+			target = sampleNearest(source, pixel);
+		}
+		else
+		{
+			float alpha = 1.0 - (pixel.y - imageHeight) / reflectionHeight;
+			
+			pixel.y = imageHeight - (pixel.y - imageHeight);
+			
+			target = sampleNearest(source, pixel);
+			
+			alpha *= reflectionAlpha;
+			target.a *= alpha;
+			target.r *= alpha;
+			target.g *= alpha;
+			target.b *= alpha;
+            
+		}
+	}
+}
