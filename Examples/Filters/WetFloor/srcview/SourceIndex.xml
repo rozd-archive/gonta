@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<index>
+	<title>Source of Gonta_Demo_WetFloor</title>
+	<nodes>
+		<node label="html-template">
+			<node label="history">
+				<node icon="cssIcon" label="history.css" url="source/html-template/history/history.css.html"/>
+				<node label="history.js" url="source/html-template/history/history.js.txt"/>
+				<node icon="htmlIcon" label="historyFrame.html" url="source/html-template/history/historyFrame.html"/>
+			</node>
+			<node icon="htmlIcon" label="index.template.html" url="source/html-template/index.template.html"/>
+			<node icon="swfIcon" label="playerProductInstall.swf" url="source/html-template/playerProductInstall.swf"/>
+			<node label="swfobject.js" url="source/html-template/swfobject.js.txt"/>
+		</node>
+		<node label="libs">
+			<node label="Gonta.swc" url="source/libs/Gonta.swc"/>
+		</node>
+		<node label="src">
+			<node label="assets">
+				<node label="images">
+					<node icon="imageIcon" label="autumn.jpg" url="source/assets/images/autumn.jpg.html"/>
+				</node>
+			</node>
+			<node icon="mxmlAppIcon" selected="true" label="index.mxml" url="source/index.mxml.html"/>
+		</node>
+	</nodes>
+</index>
