@@ -11,9 +11,10 @@ package org.gonta.filters
 	import spark.filters.ShaderFilter;
 	
 	/**
-	 * Creates an reflection of target object.
+	 * Adds "Wet Floor" effect for the specified target, by means of creating 
+	 * it's reflection.
 	 */
-	public dynamic class ReflectionFilter extends ShaderFilter
+	public dynamic class WetFloorFilter extends ShaderFilter
 	{
 		//----------------------------------------------------------------------
 		//
@@ -21,9 +22,9 @@ package org.gonta.filters
 		//
 		//----------------------------------------------------------------------
 		
-		[Embed(source="shaders/Reflection.pbj", mimeType="application/octet-stream")]
+		[Embed(source="shaders/WetFloor.pbj", mimeType="application/octet-stream")]
 		/**
-		 * The default shader for reflection effect.
+		 * The default shader for "Wet Floor" effect.
 		 */
 		public static const SHADER:Class;
 		
@@ -36,7 +37,7 @@ package org.gonta.filters
 		/**
 		 * Constructor.
 		 */
-		public function ReflectionFilter(shader:Shader=null)
+		public function WetFloorFilter(shader:Shader=null)
 		{
 			shader = shader || new Shader(new SHADER());
 			

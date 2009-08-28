@@ -1,10 +1,10 @@
 <languageVersion: 1.0;>
-kernel Reflection
+kernel WetFloor
 <
 	namespace: "org.gonta.filters.shaders";
 	vendor: "Gonta Flex library";
 	version: 1;
-	description: "Creates Reflection of input image.";
+	description: "Creates Reflection of the input image, to achieve the 'wet floor' effect.";
 >
 {
 	input image4 source;

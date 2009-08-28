@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <flexLibProperties version="1">
   <includeClasses>
-    <classEntry path="org.gonta.filters.ReflectionFilter"/>
+    <classEntry path="org.gonta.filters.WetFloorFilter"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
