@@ -22,14 +22,14 @@
 	
 	<s:BitmapImage source="@Embed(source='assets/images/autumn.jpg')">
 		<s:filters>
-			<filters:ReflectionFilter y="{ this.reflectionY }" alpha="{ this.reflectionAlpha }" height="{ this.reflectionHeight }" />
+			<filters:WetFloorFilter y="{ this.reflectionY }" alpha="{ this.reflectionAlpha }" height="{ this.reflectionHeight }" />
 		</s:filters>
 	</s:BitmapImage>
 	
 	<s:Panel height="240" title="http://helpexamples.com/flash/video/cuepoints.flv">
 		
 		<s:filters>
-			<filters:ReflectionFilter y="{ this.reflectionY }" alpha="{ this.reflectionAlpha }" height="{ this.reflectionHeight }" />
+			<filters:WetFloorFilter y="{ this.reflectionY }" alpha="{ this.reflectionAlpha }" height="{ this.reflectionHeight }" />
 		</s:filters>
 		
 		<s:VideoElement source="http://helpexamples.com/flash/video/cuepoints.flv" muted="true" complete=" event.target.play(0); " />
@@ -39,7 +39,7 @@
 	<s:Panel width="400" height="240" title="Reflection Settings">
 		
 		<s:filters>
-			<filters:ReflectionFilter y="{ this.reflectionY }" alpha="{ this.reflectionAlpha }" height="{ this.reflectionHeight }" />
+			<filters:WetFloorFilter y="{ this.reflectionY }" alpha="{ this.reflectionAlpha }" height="{ this.reflectionHeight }" />
 		</s:filters>
 		
 		<mx:Form width="100%" height="100%">
