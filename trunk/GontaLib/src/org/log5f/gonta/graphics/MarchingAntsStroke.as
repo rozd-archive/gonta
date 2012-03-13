@@ -14,20 +14,80 @@ package org.log5f.gonta.graphics
 	import mx.events.PropertyChangeEvent;
 	import mx.graphics.SolidColorStroke;
 	
+	/**
+	 * The MarchingAntsStroke class implements <i>Marching Ants</i> effect, that 
+	 * can be used for selectino tools. This class can be used as usual stroke:
+	 * 
+	 * <pre>
+	 * ...
+	 * &lt;s:Rect width="100" height="100"&gt;
+	 *     &lt;s:stroke&gt;
+	 *         &lt;graphics:MarchingAntsStroke /&gt;
+	 *     &lt;/s:stroke&gt;
+	 * &lt;/s:Rect&gt;
+	 * ...
+	 * </pre>
+	 * 
+	 * @mxml
+	 *
+	 * <p>The <code>&lt;mx:MarchingAntsStroke&gt;</code> tag inherits all the 
+	 * tag attributes of its superclass, and adds the following tag attributes:</p>
+	 * 
+	 * <pre>
+	 *  &lt;graphics:MarchingAntsStroke
+	 *    <b>Properties</b>
+	 *    interval="100"
+	 *  /&gt;
+	 *  </pre>
+	 * 
+	 * @see http://en.wikipedia.org/wiki/Marching_ants Marching ants
+	 */
 	public class MarchingAntsStroke extends SolidColorStroke
 	{
+		//----------------------------------------------------------------------
+		//
+		//  Implementation notes
+		//
+		//----------------------------------------------------------------------
+		
+		/*
+		
+		The current implementaion of "Marching ants" effect based on drawing 
+		patterns that contains diagonal lines.
+		
+		MarchingAntsStroke shares patterns, that generated using common settings,
+		for all of instances, for performance reason.
+		
+		*/
+		
+		//----------------------------------------------------------------------
+		//
+		//	Class cosntants
+		//
+		//----------------------------------------------------------------------
+		
+		//-----------------------------------
+		//	Class costants: Default values
+		//-----------------------------------
+		
+		/** Default number of segments */
+		private static const SEGEMENT:uint = 4;
+		
+		/** Default colors */
+		private static const COLORS:Vector.<uint> = 
+			Vector.<uint>([0xFFFFFF, 0x000000]);
+		
 		//----------------------------------------------------------------------
 		//
 		//	Class variables
 		//
 		//----------------------------------------------------------------------
 		
-		private static const SEGEMENT:uint = 4;
-		
-		private static const COLORS:Vector.<uint> = 
-			Vector.<uint>([0xFFFFFF, 0x000000]);
-		
-		public static var bmds:Vector.<BitmapData>;
+		/** 
+		 * List of patterns (BitmapData) that used for simulating of "marching 
+		 * ants" effect.
+		 */
+		private static var patterns:Vector.<BitmapData>;
 		
 		//----------------------------------------------------------------------
 		//
@@ -45,14 +105,18 @@ package org.log5f.gonta.graphics
 		//
 		//----------------------------------------------------------------------
 		
+		/** 
+		 * Creates patterns (BitmapData instances) and put it to 
+		 * <code>patterns</code> list.
+		 */
 		private static function initialize():void
 		{
-			const STEPS:uint = SEGEMENT * SEGEMENT;
+			const PATTERNS:uint = SEGEMENT * SEGEMENT;
 			const SIZE:uint = SEGEMENT * SEGEMENT;
 			
-			bmds = new Vector.<BitmapData>(STEPS);
+			patterns = new Vector.<BitmapData>(PATTERNS);
 			
-			for (var b:int = 0; b < STEPS; b++)
+			for (var p:int = 0; p < PATTERNS; p++)
 			{
 				var bmd:BitmapData = new BitmapData(SIZE, SIZE, false, COLORS[0]);
 				
@@ -65,7 +129,7 @@ package org.log5f.gonta.graphics
 				{
 					l = j % (SEGEMENT * 2);
 					
-					var n:uint = SIZE + SEGEMENT + b;
+					var n:uint = SIZE + SEGEMENT + p;
 					for (var i:int = 0; i < n; i++)
 					{
 						if (i % SEGEMENT == 0)
@@ -73,12 +137,12 @@ package org.log5f.gonta.graphics
 						
 						if (k % 2 == 0)
 						{
-							bmd.setPixel(i + (SEGEMENT - l) - b, j, COLORS[1]);
+							bmd.setPixel(i + (SEGEMENT - l) - p, j, COLORS[1]);
 						}
 					}
 				}
 				
-				bmds[b] = bmd;
+				patterns[p] = bmd;
 			}
 		}
 		
@@ -102,13 +166,19 @@ package org.log5f.gonta.graphics
 		//
 		//----------------------------------------------------------------------
 		
+		//-----------------------------------
+		//	Variables: 
+		//-----------------------------------
+		
+		/** Stores index of current pattern. */
 		private var displacement:uint = 0;
 		
-		private var timer:Timer;
+		//-----------------------------------
+		//	Variables: Utils
+		//-----------------------------------
 		
-		private var origin:Point;
-		private var bounds:Rectangle;
-		private var graphics:Graphics;
+		/** Timer for redrawing stroke. */
+		private var timer:Timer;
 		
 		//----------------------------------------------------------------------
 		//
@@ -124,7 +194,11 @@ package org.log5f.gonta.graphics
 		private var _interval:uint = 60;
 		
 		[Bindable(event="propertyChange")]
-		/** TODO (mrozdobudko): TBD */
+		/** 
+		 * The delay in milliseconds between stroke redrawing.
+		 * 
+		 * @default 60
+		 */
 		public function get interval():uint
 		{
 			return this._interval;
@@ -140,6 +214,8 @@ package org.log5f.gonta.graphics
 			
 			this._interval = value;
 			
+			this.initTimer();
+			
 			this.dispatchEvent(PropertyChangeEvent.
 				createUpdateEvent(this, "interval", oldValue, value));
 		}
@@ -154,17 +230,20 @@ package org.log5f.gonta.graphics
 		//	Overridden methods: SolidColorStroke
 		//-----------------------------------
 		
-		override public function apply(graphics:Graphics, targetBounds:Rectangle, targetOrigin:Point):void
+		/** @inheritDoc */
+		override public function apply(graphics:Graphics, bounds:Rectangle, origin:Point):void
 		{
-			this.graphics = graphics;
-			this.origin = targetOrigin;
-			this.bounds = targetBounds;
-			
-			this.draw();
+			graphics.drawGraphicsData(Vector.<IGraphicsData>([this.createGraphicsStroke(bounds, origin)]));
 		}
 		
+		/** @inheritDoc */
 		override public function createGraphicsStroke(targetBounds:Rectangle, targetOrigin:Point):GraphicsStroke
 		{
+			if (this.displacement == 0)
+				this.displacement = patterns.length;
+			
+			this.displacement--;
+			
 			var graphicsStroke:GraphicsStroke = new GraphicsStroke(); 
 			graphicsStroke.thickness = weight;  
 			graphicsStroke.miterLimit = miterLimit; 
@@ -175,7 +254,7 @@ package org.log5f.gonta.graphics
 			// specified, a value of 'none' is used instead of 'round'
 			graphicsStroke.caps = (!caps) ? CapsStyle.ROUND : caps;
 			
-			const bmd:BitmapData = bmds[this.displacement];
+			const bmd:BitmapData = patterns[this.displacement];
 			
 			// Give the GraphicsStroke a GraphicsSolidFill corresponding to the 
 			// SolidColorStroke's color and alpha values
@@ -184,11 +263,6 @@ package org.log5f.gonta.graphics
 			graphicsSolidFill.repeat = true;
 			graphicsStroke.fill = graphicsSolidFill;
 			
-			this.displacement++;
-			
-			if (this.displacement == bmds.length)
-				this.displacement = 0;
-				
 			return graphicsStroke;
 		}
 		
@@ -198,6 +272,7 @@ package org.log5f.gonta.graphics
 		//
 		//----------------------------------------------------------------------
 		
+		/** @private */
 		private function initTimer():void
 		{
 			if (this.interval == 0)
@@ -206,6 +281,7 @@ package org.log5f.gonta.graphics
 				{
 					this.timer.stop();
 					this.timer.removeEventListener(TimerEvent.TIMER, timerHandler);
+					this.timer = null;
 				}
 			}
 			else
@@ -223,9 +299,10 @@ package org.log5f.gonta.graphics
 			}
 		}
 		
-		private function draw():void
+		/** Notifies target that stroke need to be redrawn. */
+		private function notify():void
 		{
-			graphics.drawGraphicsData(Vector.<IGraphicsData>([this.createGraphicsStroke(this.bounds, this.origin)]));
+			this.dispatchEvent(new PropertyChangeEvent(PropertyChangeEvent.PROPERTY_CHANGE));
 		}
 		
 		//----------------------------------------------------------------------
@@ -234,9 +311,10 @@ package org.log5f.gonta.graphics
 		//
 		//----------------------------------------------------------------------
 		
+		/** @private */
 		protected function timerHandler(event:TimerEvent):void
 		{
-			this.dispatchEvent(new PropertyChangeEvent(PropertyChangeEvent.PROPERTY_CHANGE));
+			this.notify();
 		}
 	}
 }
