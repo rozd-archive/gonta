@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<index>
+	<title>Source of Gonta_Demo_MarchingAnts</title>
+	<nodes>
+		<node label="html-template">
+			<node label="history">
+			</node>
+			<node icon="htmlIcon" label="index.template.html" url="source/html-template/index.template.html"/>
+			<node icon="swfIcon" label="playerProductInstall.swf" url="source/html-template/playerProductInstall.swf"/>
+			<node label="swfobject.js" url="source/html-template/swfobject.js.txt"/>
+		</node>
+		<node label="libs">
+		</node>
+		<node label="src">
+			<node icon="mxmlAppIcon" selected="true" label="index.mxml" url="source/index.mxml.html"/>
+		</node>
+	</nodes>
+	<zipfile label="Download source (ZIP, 14K)" url="Gonta_Demo_MarchingAnts.zip">
+	</zipfile>
+	<sdklink label="Download Flex SDK" url="http://www.adobe.com/go/flex451_sdk_download">
+	</sdklink>
+</index>
